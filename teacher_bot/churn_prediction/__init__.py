@@ -25,7 +25,9 @@ class churn_prediction:
         if answer == "Условие":
             print("Описание тестового задание! Как интереесно!")
         elif isinstance(answer, pd.DataFrame):
-            print("Ого! Датасет, сейчас мы будем его исследовать, интересно, что в нем.")
+            print(
+                "Ого! Датасет, сейчас мы будем его исследовать, интересно, что в нем."
+            )
             answer.head()
             print("Сам я не справляюсь - нужна твоя помощь")
 
@@ -57,7 +59,9 @@ class churn_prediction:
                 )
 
             elif ("Surname" in df.columns) & (self.drop_runs_number > 5):
-                print("У людей есть важный почти уникальный признак. А как тебя зовут?")
+                print(
+                    "У людей есть важный почти уникальный признак. А как тебя зовут?"
+                )
 
             elif (
                 ("RowNumber" not in df.columns)
@@ -77,22 +81,17 @@ class churn_prediction:
                 print("Ура! Второе задание позади!")
                 print("Кодовая фраза Science")
             elif answer.lower() == "да":
-                print("Увы :( Тут поможет метод .isnull().sum() попробуй еще раз")
+                print(
+                    "Увы :( Тут поможет метод .isnull().sum() попробуй еще раз"
+                )
             else:
                 print("Ой-ой я понимаю только да или нет :)")
 
     def score_task(self, answer, df=None):
 
-        if df==None:
-            print('Мне нужен тестовый датасет, чтобы посчитать качество :(')
+        if df == None:
+            print("Мне нужен тестовый датасет, чтобы посчитать качество :(")
         if answer == "Условие":
             print(
                 "А теперь самое интересное! Нужно построить модель, которая на тестовом файле будет давать х качество"
             )
-        else:
-
-
-            if isinstance(answer, LogisticRegression):
-
-
-
