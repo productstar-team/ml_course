@@ -51,32 +51,36 @@ class ChurnPrediction:
                 "А получившийся датафрейм передать мне в параметрах."
             )
         else:
-            basic_answer()
-            self._drop_runs_number += 1
-            if (self._drop_runs_number == 2) & ("RowNumber" in df.columns):
-                print("Тут может пригожиться метод .nunique()")
-            elif "RowNumber" in df.columns:
-                print(
-                    "Нужно ответить на очень важный вопрос - сколько уникальных значений имеет каждый признак."
-                )
-            elif "CustomerId" in df.columns:
-                print(
-                    "Нужно ответить на очень важный вопрос - сколько уникальных значений имеет каждый признак."
-                )
-
-            elif "Surname" in df.columns:
-                print(
-                    "Осталась еще одна колонка. У людей есть важный почти уникальный признак. А как тебя зовут?"
-                )
-
-            elif (
-                ("RowNumber" not in df.columns)
-                & ("CustomerId" not in df.columns)
-                & ("Surname" not in df.columns)
-            ):
+            if not isinstance(answer, pd.DataFrame):
                 basic_answer()
-                print("Кодовая фраза Data")
-                print("Ура! Первое задание позади!")
+                print("Ой-ой. Я тебя не понимаю, мне нужен pd.DataFrame без колонок, в которых слишком много уникальных значений")
+            else:
+                basic_answer()
+                self._drop_runs_number += 1
+                if (self._drop_runs_number == 2) & ("RowNumber" in df.columns):
+                    print("Тут может пригожиться метод .nunique()")
+                elif "RowNumber" in df.columns:
+                    print(
+                        "Нужно ответить на очень важный вопрос - сколько уникальных значений имеет каждый признак."
+                    )
+                elif "CustomerId" in df.columns:
+                    print(
+                        "Нужно ответить на очень важный вопрос - сколько уникальных значений имеет каждый признак."
+                    )
+
+                elif "Surname" in df.columns:
+                    print(
+                        "Осталась еще одна колонка. У людей есть важный почти уникальный признак. А как тебя зовут?"
+                    )
+
+                elif (
+                    ("RowNumber" not in df.columns)
+                    & ("CustomerId" not in df.columns)
+                    & ("Surname" not in df.columns)
+                ):
+                    basic_answer()
+                    print("Кодовая фраза Data")
+                    print("Ура! Первое задание позади!")
 
     def null_task(self, answer=None):
         if answer is None:
@@ -96,7 +100,8 @@ class ChurnPrediction:
             else:
                 print("Ой-ой я понимаю только да или нет :)")
 
-    def production_quality(self, answer=None, model=None):
+    def production_quality(self, answer=None):
+
 
         if answer is None:
             print(
@@ -105,33 +110,37 @@ class ChurnPrediction:
                 "у которого первая колонка 'RowNumber', а вторая 'predict'. Пример посылки мы пробовали когда отправляли submission."
             )
         else:
-            basic_answer(mode="test")
-            from sklearn.metrics import roc_auc_score
-            import random
-
-            merged = pd.read_csv("./data/meta_file.csv").merge(
-                answer, on=["RowNumber"]
-            )
-            score = roc_auc_score(merged["Exited"], merged["predict"])
-            print(
-                f"Твой результат: {roc_auc_score(merged['Exited'], merged['predict'])}"
-            )
-            if score == 0.5:
-                print("Ого! Да это же самое хитрое решение - хоть я и простой бот, "
-                      "но монетку подбросить и наугад сказать даже я смогу."
-                      "Я уверен - как-то точно можно улучшить предсказания!")
-
-            elif score > 0.84:
-                print(
-                    "Наконец-то мы столько съэкономили денег! Чтобы себя порадовать - можно посчитать как мы посчитали с бейзлайном :)."
-                    " Финальная кодовая фраза 'моя любимая наука' "
-                    "Если вспомнить все предыдущие получится: Data Science моя любимая наука"
-                    "Что-то правда, то правда - обожаю анализировать данные, особенно, когда мне помогают"
-                )
-            else:
+            if not isinstance(answer, pd.DataFrame):
                 basic_answer()
-                answers = ["А что есть попробовать бустинг?",
-                    "Ты же помнишь, что ROC-AUC считается по вероятностям?",
-                    "А что если построить случайный лес?",
-                    "Нужно качество больше 0.80, я верю - у тебя получится!"]
-                print(random.choice(answers))
+                print("Ой-Ой. Я тебя не понимаю - мне нужен pd.DataFrame с колонками RowNumber и predict. predict - это предсказание твоей модели")
+            else:
+                basic_answer(mode="test")
+                from sklearn.metrics import roc_auc_score
+                import random
+
+                merged = pd.read_csv("./data/meta_file.csv").merge(
+                    answer, on=["RowNumber"]
+                )
+                score = roc_auc_score(merged["Exited"], merged["predict"])
+                print(
+                    f"Твой результат: {roc_auc_score(merged['Exited'], merged['predict'])}"
+                )
+                if score == 0.5:
+                    print("Ого! Да это же самое хитрое решение - хоть я и простой бот, "
+                          "но монетку подбросить и наугад сказать даже я смогу."
+                          "Я уверен - как-то точно можно улучшить предсказания!")
+
+                elif score >= 0.8:
+                    print(
+                        "Наконец-то мы столько съэкономили денег! Чтобы себя порадовать - можно посчитать как мы посчитали с бейзлайном :)."
+                        " Финальная кодовая фраза 'моя любимая наука' "
+                        "Если вспомнить все предыдущие получится: Data Science моя любимая наука"
+                        "Что-то правда, то правда - обожаю анализировать данные, особенно, когда мне помогают"
+                    )
+                else:
+                    basic_answer()
+                    answers = ["А что есть попробовать бустинг?",
+                        "Ты же помнишь, что ROC-AUC считается по вероятностям?",
+                        "А что если построить случайный лес?",
+                        "Нужно качество больше 0.80, я верю - у тебя получится!"]
+                    print(random.choice(answers))
